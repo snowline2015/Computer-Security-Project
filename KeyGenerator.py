@@ -62,7 +62,7 @@ def get_prime(bits):
             return p, q
 
 
-def RSA_key_generation(length=2048, password):
+def RSA_key_generation(password, length=2048):
     p, q = get_prime(length // 2)
     n = p*q
     euler = (p-1)*(q-1)
@@ -71,7 +71,17 @@ def RSA_key_generation(length=2048, password):
         e = random.randint(2, euler)
     d = bezout(e, euler)[2] % euler
 
-    return e, n, d
+    passphase = password.ljust(16, '0') if len(password) < 16 else passphase = password[:16]
+    key = passphase.encode('utf-8')
+    cipher = AES.new(key, AES.MODE_EAX)
+    ciphertext_d, tag = cipher.encrypt_and_digest(str(d).encode())
+
+    b64_e = base64.b64encode(str(e).encode()).decode()
+    b64_n = base64.b64encode(str(n).encode()).decode()
+    b64_d = base64.b64encode(ciphertext_d.hex().encode()).decode()
+
+    return b64_e, b64_n, b64_d
 
 
-e, n, d = RSA_key_generation()
+# e, n, d = RSA_key_generation("residentevil4567")
+# print(e,"\n",n,"\n",d)
