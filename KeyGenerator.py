@@ -1,7 +1,8 @@
 import random
-import hashlib
 import base64
 
+import Crypto.Random
+from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Util import number
 from Crypto.Cipher import AES
 
@@ -71,17 +72,22 @@ def RSA_key_generation(password, length=2048):
         e = random.randint(2, euler)
     d = bezout(e, euler)[2] % euler
 
-    passphase = password.ljust(16, '0') if len(password) < 16 else passphase = password[:16]
+    # Key derived function
+    passphase = password.ljust(16, '0') if len(password) < 16 else password[:16]
+
     key = passphase.encode('utf-8')
-    cipher = AES.new(key, AES.MODE_EAX)
-    ciphertext_d, tag = cipher.encrypt_and_digest(str(d).encode())
+    IV = Crypto.Random.new().read(16)
+    cipher = AES.new(key, AES.MODE_CBC, IV)
+    if len(str(d)) % 16 != 0:
+        d = str(d).zfill(len(str(d)) + (16 - (len(str(d)) % 16)))
+    ciphertext_d = cipher.encrypt(str(d).encode())
 
     b64_e = base64.b64encode(str(e).encode()).decode()
     b64_n = base64.b64encode(str(n).encode()).decode()
-    b64_d = base64.b64encode(ciphertext_d.hex().encode()).decode()
+    b64_d = base64.b64encode(IV + ciphertext_d).decode()
 
-    return b64_e, b64_n, b64_d
+    return (b64_e, b64_n), (b64_d, b64_n)
 
 
-# e, n, d = RSA_key_generation("residentevil4567")
+# (e, n), (d, n) = RSA_key_generation("residentevil4567")
 # print(e,"\n",n,"\n",d)
