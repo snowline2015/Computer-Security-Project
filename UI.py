@@ -7,11 +7,12 @@ class LoginWindow(QDialog):
     def __init__(self, w, h) -> None:
         super(LoginWindow, self).__init__()
         loadUi("login_ui.ui", self)
+        self.setFixedSize(w, h)
         self.setWindowTitle("Application")
         self.LoginBtn.clicked.connect(self.LoginClicked)
         self.OpenRegister.clicked.connect(self.OpenRegisterClicked)
 
-        self.setFixedSize(w, h)
+
 
     def LoginClicked(self):
         inputmail = self.inputmain.text()
@@ -27,17 +28,16 @@ class RegisterWindow(QDialog):
     def __init__(self, w, h) -> None:
         super(RegisterWindow, self).__init__()
         loadUi("register_ui.ui", self)
+        self.setFixedSize(w, h)
         self.RegisterBtn.clicked.connect(self.RegisterClicked)
         self.CancelBtn.clicked.connect(self.CancelClicked)
 
-        self.setFixedSize(w, h)
         
     def RegisterClicked(self):
         pass
 
     def CancelClicked(self):
         mainwindow = LoginWindow(488, 341)
-        mainwindow.setFixedSize(488, 341)
         widgets.addWidget(mainwindow)
         widgets.setCurrentIndex(widgets.currentIndex() - 1)
         print(widgets.currentIndex())

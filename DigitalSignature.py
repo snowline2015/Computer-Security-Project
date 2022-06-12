@@ -1,6 +1,7 @@
 import hashlib
 import base64
 from Crypto.Cipher import AES
+import KeyGenerator
 
 
 def sign_file(filename, Kprivate, password):
@@ -8,7 +9,7 @@ def sign_file(filename, Kprivate, password):
     n = base64.b64decode(Kprivate[1]).decode()
 
     # Key derived function
-    passphase = password.ljust(16, '0') if len(password) < 16 else password[:16]
+    passphase = KeyGenerator.key_derivation(password)
 
     key = passphase.encode('utf-8')
     IV = d_encrypted[:16]

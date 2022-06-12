@@ -1,6 +1,6 @@
 import random
 import base64
-
+import hashlib
 import Crypto.Random
 from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Util import number
@@ -23,44 +23,17 @@ def bezout(a, b, x2=1, x1=0, y2=0, y1=1):
     return a, x2, y2
 
 
-def is_prime(n):
-    if n != int(n):
-        return False
-    n = int(n)
-    # Miller-Rabin test for prime
-    if n == 0 or n == 1 or n == 4 or n == 6 or n == 8 or n == 9:
-        return False
-    if n == 2 or n == 3 or n == 5 or n == 7:
-        return True
-    s = 0
-    d = n - 1
-    while d % 2 == 0:
-        d >>= 1
-        s += 1
-    assert (2 ** s * d == n - 1)
-
-    def trial_composite(a):
-        if pow(a, d, n) == 1:
-            return False
-        for i in range(s):
-            if pow(a, 2 ** i * d, n) == n - 1:
-                return False
-        return True
-
-    for i in range(8):  # number of trials
-        a = random.randrange(2, n)
-        if trial_composite(a):
-            return False
-
-    return True
-
-
 def get_prime(bits):
     while True:
         p = number.getPrime(bits)
         q = number.getPrime(bits)
         if p != q:
             return p, q
+
+
+def key_derivation(password):
+    key = hashlib.sha256(password.encode()).hexdigest()[:16]
+    return key
 
 
 def RSA_key_generation(password, length=2048):
@@ -73,7 +46,7 @@ def RSA_key_generation(password, length=2048):
     d = bezout(e, euler)[2] % euler
 
     # Key derived function
-    passphase = password.ljust(16, '0') if len(password) < 16 else password[:16]
+    passphase = key_derivation(password)
 
     key = passphase.encode('utf-8')
     IV = Crypto.Random.new().read(16)

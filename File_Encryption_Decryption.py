@@ -1,9 +1,8 @@
-import random
-import hashlib
 import base64
 import os
-from Crypto.Cipher import AES
 import Crypto.Random
+from Crypto.Cipher import AES
+import KeyGenerator
 
 # These functions only for file with size less than 10000000 GB
 # Default encrypted file format: File Size + IV + Encrypted Ksession Size + Encrypted Ksession + Encrypted Data
@@ -24,7 +23,7 @@ def key_session_decryption(Ksession_encrypted, Kprivate, password):
     Ksession_encrypted = base64.b64decode(Ksession_encrypted).decode()
 
     # Key derived function
-    passphase = password.ljust(16, '0') if len(password) < 16 else password[:16]
+    passphase = KeyGenerator.key_derivation(password)
 
     key = passphase.encode('utf-8')
     IV = d_encrypted[:16]
@@ -77,12 +76,9 @@ def file_decryption(filename, Kprivate, password):
         with open(outputFile, 'wb') as outfile:
             while True:
                 chunk = infile.read(CHUNK_SIZE)
-
                 if len(chunk) == 0:
                     break
-
                 outfile.write(decryptor.decrypt(chunk))
-
             outfile.truncate(filesize)
 
 
