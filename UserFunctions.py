@@ -46,7 +46,7 @@ def edit_profile(email, password, fullname, dob, phone, address):
     data[email]['dob'] = dob
     data[email]['phone'] = phone
     data[email]['address'] = address
-    if password != None:
+    if password is not None:
         salt = os.urandom(32)
         data[email]['password'] = hashlib.sha256(password.encode() + salt).hexdigest()
         data[email]['salt'] = salt.hex()
@@ -68,14 +68,14 @@ def generate_key(email):
 def file_encrypt(email, file_path):
     if data[email]['Kpublic'] == '':
         return False
-    File_Encryption_Decryption.file_encrypt(file_path, (data[email]['Kpublic']['e'], data[email]['Kpublic']['n']))
+    File_Encryption_Decryption.file_encryption(file_path, (data[email]['Kpublic']['e'], data[email]['Kpublic']['n']))
     return True
 
 
 def file_decrypt(email, file_path):
     if data[email]['Kprivate'] == '':
         return False
-    File_Encryption_Decryption.file_decrypt(file_path, (data[email]['Kprivate']['d'], data[email]['Kprivate']['n']), data[email]['password_backup'])
+    File_Encryption_Decryption.file_decryption(file_path, (data[email]['Kprivate']['d'], data[email]['Kprivate']['n']), data[email]['password_backup'])
     return True
 
 
