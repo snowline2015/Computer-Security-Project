@@ -1,6 +1,11 @@
 import json
 import hashlib
 import os
+import base64
+
+import Crypto
+from Crypto.Cipher import AES
+
 import KeyGenerator
 import File_Encryption_Decryption
 import DigitalSignature
@@ -47,9 +52,29 @@ def edit_profile(email, password, fullname, dob, phone, address):
     data[email]['phone'] = phone
     data[email]['address'] = address
     if password is not None:
-        salt = os.urandom(32)
-        data[email]['password'] = hashlib.sha256(password.encode() + salt).hexdigest()
-        data[email]['salt'] = salt.hex()
+        d_encrypted = base64.b64decode(data[email]['Kprivate']['d'])
+
+        # Key derived function
+        passphase = KeyGenerator.key_derivation(data[email]['password'])
+
+        key = passphase.encode('utf-8')
+        IV = d_encrypted[:16]
+        cipher = AES.new(key, AES.MODE_CBC, IV)
+        d = int(cipher.decrypt(d_encrypted[16:]))
+
+        # Key derived function
+        passphase = KeyGenerator.key_derivation(password)
+
+        key = passphase.encode('utf-8')
+        IV = Crypto.Random.new().read(16)
+        cipher = AES.new(key, AES.MODE_CBC, IV)
+        if len(str(d)) % 16 != 0:
+            d = str(d).zfill(len(str(d)) + (16 - (len(str(d)) % 16)))
+        ciphertext_d = cipher.encrypt(str(d).encode())
+        b64_d = base64.b64encode(IV + ciphertext_d).decode()
+
+        data[email]['Kprivate']['d'] = b64_d
+        data[email]['password'] = password
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
     return True
