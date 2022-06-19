@@ -29,7 +29,6 @@ def register(email, password, fullname, dob, phone, address):
         'salt': salt.hex(),
         'Kpublic': '',
         'Kprivate': '',
-        'password_backup': ''
     })
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
@@ -84,7 +83,6 @@ def generate_key(email):
     (e, n), (d, n) = KeyGenerator.RSA_key_generation(data[email]['password'])
     data[email]['Kpublic'] = {'e': e, 'n': n}
     data[email]['Kprivate'] = {'d': d, 'n': n}
-    data[email]['password_backup'] = hashlib.sha256(data[email]['password'].encode() + bytes.fromhex(data[email]['salt'])).hexdigest()
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
     return True
@@ -100,14 +98,14 @@ def file_encrypt(email, file_path):
 def file_decrypt(email, file_path):
     if data[email]['Kprivate'] == '':
         return False
-    File_Encryption_Decryption.file_decryption(file_path, (data[email]['Kprivate']['d'], data[email]['Kprivate']['n']), data[email]['password_backup'])
+    File_Encryption_Decryption.file_decryption(file_path, (data[email]['Kprivate']['d'], data[email]['Kprivate']['n']), data[email]['password'])
     return True
 
 
 def digital_signature(email, file_path):
     if data[email]['Kprivate'] == '':
         return False
-    DigitalSignature.sign_file(file_path, (data[email]['Kprivate']['d'], data[email]['Kprivate']['n']), data[email]['password_backup'])
+    DigitalSignature.sign_file(file_path, (data[email]['Kprivate']['d'], data[email]['Kprivate']['n']), data[email]['password'])
     return True
 
 
