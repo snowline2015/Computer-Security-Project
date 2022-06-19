@@ -40,12 +40,10 @@ class LoginWindow(QDialog):
             QMessageBox.warning(self, "Login", "Empty email or password entered", QMessageBox.Ok)
         else:
             log, err = login(self.email.text(), self.passwd.text())
-            if log == True:
+            if log:
                 QMessageBox.about(self, "Login", "Successfully Login")
             else:
                 QMessageBox.warning(self, "Login", err, QMessageBox.Ok)
-
-            
 
     def CancelClicked(self):
         app.quit()
@@ -99,7 +97,7 @@ class RegisterWindow(QDialog):
             self.passwd_again.setText("")
         else:
             reg = register(self.email.text(), self.passwd.text(), self.fullname.text(), self.birthday.text(), self.phonenumber.text(), self.address.text())
-            if reg == False:
+            if not reg:
                 QMessageBox.warning(self, "Error", "Register unsuccessful (Unexpected error occured)!!!", QMessageBox.Ok)
             else:
                 QMessageBox.about(self, "Success", "Successfully register")

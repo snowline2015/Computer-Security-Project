@@ -9,18 +9,21 @@ from Crypto.Cipher import AES
 import KeyGenerator
 import File_Encryption_Decryption
 import DigitalSignature
+from json.decoder import JSONDecodeError
 
-path = 'database\\data.json'
+path = 'database\\users.json'
 f = open(path)
-data = json.load(f)
+try:
+    data = json.load(f)
+except JSONDecodeError:
+    data = {}
 
 
 def register(email, password, fullname, dob, phone, address):
     if email in data:
         return False
     salt = os.urandom(32)
-    data['users'].append({
-        'email': email,
+    data[email] = {
         'password': hashlib.sha256(password.encode() + salt).hexdigest(),
         'fullname': fullname,
         'dob': dob,
@@ -29,7 +32,7 @@ def register(email, password, fullname, dob, phone, address):
         'salt': salt.hex(),
         'Kpublic': '',
         'Kprivate': '',
-    })
+    }
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
     return True
