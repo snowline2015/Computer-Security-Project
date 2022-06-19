@@ -22,7 +22,7 @@ class LoginWindow(QDialog):
         # Add a button box
         btnBox = QDialogButtonBox()
 
-        self.login_btn = QPushButton("OK")
+        self.login_btn = QPushButton("Login")
         self.login_btn.clicked.connect(self.LoginClicked)
         btnBox.addButton(self.login_btn, QDialogButtonBox.AcceptRole)
 
@@ -36,7 +36,16 @@ class LoginWindow(QDialog):
         self.setLayout(self.dlgLayout)
 
     def LoginClicked(self):
-        pass
+        if self.email.text() == "" or self.passwd.text() == "":
+            QMessageBox.warning(self, "Login", "Empty email or password entered", QMessageBox.Ok)
+        else:
+            log, err = login(self.email.text(), self.passwd.text())
+            if log == True:
+                QMessageBox.about(self, "Login", "Successfully Login")
+            else:
+                QMessageBox.warning(self, "Login", err, QMessageBox.Ok)
+
+            
 
     def CancelClicked(self):
         app.quit()
@@ -84,14 +93,14 @@ class RegisterWindow(QDialog):
         self.setLayout(self.dlgLayout)
 
     def RegisterClicked(self):
-        if self.passwd.text != self.passwd_again.text:
+        if self.passwd.text() != self.passwd_again.text():
             QMessageBox.about(self, "Error", "Re-entered password is incorrect")
-            self.passwd.text = ""
-            self.passwd_again.text = ""
+            self.passwd.setText("")
+            self.passwd_again.setText("")
         else:
-            reg = register(self.email.text, self.passwd.text, self.fullname.text, self.birthday.text, self.phonenumber.text, self.address.text)
+            reg = register(self.email.text(), self.passwd.text(), self.fullname.text(), self.birthday.text(), self.phonenumber.text(), self.address.text())
             if reg == False:
-                QMessageBox.about(self, "Error", "Register unsuccessful (Unexpected error occured)!!!")
+                QMessageBox.warning(self, "Error", "Register unsuccessful (Unexpected error occured)!!!", QMessageBox.Ok)
             else:
                 QMessageBox.about(self, "Success", "Successfully register")
 
