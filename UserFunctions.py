@@ -48,7 +48,7 @@ def login(email, password):
 
 def edit_profile(email, password, fullname, dob, phone, address):
     if email not in data:
-        return False
+        return False, 'Account not found'
     data[email]['fullname'] = fullname
     data[email]['dob'] = dob
     data[email]['phone'] = phone
@@ -79,7 +79,7 @@ def edit_profile(email, password, fullname, dob, phone, address):
         data[email]['password'] = password
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
-    return True
+    return True, ''
 
 
 def generate_key(email):

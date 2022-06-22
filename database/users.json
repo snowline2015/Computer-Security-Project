@@ -8,5 +8,15 @@
         "salt": "8bfe838aa5b3cf282dfbdf2c7a7e2f9a1dd0be896c2acafe78867b42047326c9",
         "Kpublic": "",
         "Kprivate": ""
+    },
+    "test@": {
+        "password": "3750942cfbec14531b0ed4793d6a60462836c6a29cdacb6898b748a511d9398d",
+        "fullname": "test",
+        "dob": "1/1/2000",
+        "phone": "123",
+        "address": "somewhere",
+        "salt": "3b98374a100e22027850ebaf128f67d38245ddb0af2ef71223a74a42014b1b6c",
+        "Kpublic": "",
+        "Kprivate": ""
     }
 }
