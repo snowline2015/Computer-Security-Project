@@ -1,4 +1,3 @@
-from ast import Global
 import sys
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
@@ -251,13 +250,16 @@ class GenerateKeysWindow(QDialog):
         self.setLayout(self.vblayout)
 
     def GenerateKeys(self):
-        c = generate_key(GlobalObject().getUser())
-        if c:
-            QMessageBox.about(self, "Generate Keys", "Keys generated successfully")
-            self.stat.setText("Keys generated successfully")
+        if check_exist_key(GlobalObject().getUser()):
+            QMessageBox.warning(self, "Generate Keys", "Keys existed!!!", QMessageBox.Ok)
         else:
-            QMessageBox.warning(self, "Generate Keys", "An unexpected error occurred!!!", QMessageBox.Ok)
-            self.stat.setText("Error")
+            c = generate_key(GlobalObject().getUser())
+            if c:
+                QMessageBox.about(self, "Generate Keys", "Keys generated successfully")
+                self.stat.setText("Keys generated successfully")
+            else:
+                QMessageBox.warning(self, "Generate Keys", "An unexpected error occurred!!!", QMessageBox.Ok)
+                self.stat.setText("Error")
 
 
 class EditProfileWindow(QDialog):
@@ -324,7 +326,7 @@ class FirstWindow(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Darkhold")
-        self.setMinimumSize(400, 300)
+        self.setMinimumSize(600, 400)
         self.layout = QVBoxLayout()
 
         self.login = LoginWindow()
@@ -342,7 +344,7 @@ class SecondWindow(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Darkhold")
-        # self.setMinimumSize(400, 300)
+        self.setMinimumSize(600, 400)
 
         self.vblayout = QVBoxLayout()
         menubar = QMenuBar()
