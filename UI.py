@@ -1,3 +1,4 @@
+from ast import Global
 import sys
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
@@ -43,8 +44,8 @@ class LoginWindow(QDialog):
         else:
             log, err = login(self.email.text(), self.passwd.text())
             if log:
-                current_usr = self.email.text()
                 GlobalObject().dispatchEvent("second")
+                GlobalObject().addUser(self.email.text())
             else:
                 QMessageBox.warning(self, "Login", err, QMessageBox.Ok)
 
@@ -136,7 +137,7 @@ class EncryptFileWindow(QDialog):
     def GetFilePath(self):
         file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
         if chk:
-            c = file_encrypt(current_usr, file)
+            c = file_encrypt(GlobalObject().getUser(), file)
             if c:
                 QMessageBox.about(self, "Encrypt File", "File Encrypt Successfully")
                 self.stat.setText("Your file is encypted")
@@ -165,7 +166,7 @@ class DecryptFileWindow(QDialog):
     def GetFilePath(self):
         file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
         if chk:
-            c = file_decrypt(current_usr, file)
+            c = file_decrypt(GlobalObject().getUser(), file)
             if c:
                 QMessageBox.about(self, "Decrypt File", "File Decrypt Successfully")
                 self.stat.setText("Your file is decypted")
@@ -194,7 +195,7 @@ class SignFileWindow(QDialog):
     def GetFilePath(self):
         file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
         if chk:
-            c = digital_signature(current_usr, file)
+            c = digital_signature(GlobalObject().getUser(), file)
             if c:
                 QMessageBox.about(self, "Sign File", "File Sign Successfully")
                 self.stat.setText("Check out for signature file")
@@ -223,7 +224,7 @@ class VerifyFileSignWindow(QDialog):
     def GetFilePath(self):
         file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Signature Files (*.sig)")
         if chk:
-            c = digital_signature_verification(current_usr, file)
+            c = digital_signature_verification(GlobalObject().getUser(), file)
             if c:
                 QMessageBox.about(self, "Verify File Sign", "Valid Signature")
                 self.stat.setText("Valid Signature")
@@ -250,7 +251,7 @@ class GenerateKeysWindow(QDialog):
         self.setLayout(self.vblayout)
 
     def GenerateKeys(self):
-        c = generate_key(current_usr)
+        c = generate_key(GlobalObject().getUser())
         if c:
             QMessageBox.about(self, "Generate Keys", "Keys generated successfully")
             self.stat.setText("Keys generated successfully")
@@ -427,8 +428,8 @@ class MainWindow(QMainWindow):
         self.second_window.show()
 
 
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    current_usr = ""
     execute = MainWindow()
     sys.exit(app.exec_())

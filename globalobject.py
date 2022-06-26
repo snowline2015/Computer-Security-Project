@@ -6,6 +6,7 @@ class GlobalObject(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self._events = {}
+        self._user = ""
 
     def addEventListener(self, name, func):
         if name not in self._events:
@@ -17,3 +18,9 @@ class GlobalObject(QtCore.QObject):
         functions = self._events.get(name, [])
         for func in functions:
             QtCore.QTimer.singleShot(0, func)
+
+    def addUser(self, usr):
+        self._user = usr
+
+    def getUser(self):
+        return self._user
