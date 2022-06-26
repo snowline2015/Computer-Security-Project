@@ -2,10 +2,8 @@ import json
 import hashlib
 import os
 import base64
-
 import Crypto
 from Crypto.Cipher import AES
-
 import KeyGenerator
 import File_Encryption_Decryption
 import DigitalSignature
@@ -120,3 +118,9 @@ def digital_signature_verification(email, file_path):
     if DigitalSignature.verify_file(file_path, (data[email]['Kpublic']['e'], data[email]['Kpublic']['n'])):
         return True
     return False
+
+
+def check_exist_key(email):
+    if data[email]['Kpublic'] == '' or data[email]['Kprivate'] == '':
+        return False
+    return True
