@@ -51,7 +51,7 @@ def edit_profile(email, password, fullname, dob, phone, address):
     data[email]['dob'] = dob
     data[email]['phone'] = phone
     data[email]['address'] = address
-    if password is not None:
+    if password is not None and password != '':
         d_encrypted = base64.b64decode(data[email]['Kprivate']['d'])
 
         # Key derived function
@@ -62,8 +62,12 @@ def edit_profile(email, password, fullname, dob, phone, address):
         cipher = AES.new(key, AES.MODE_CBC, IV)
         d = int(cipher.decrypt(d_encrypted[16:]))
 
+        salt = os.urandom(32)
+        data[email]['password'] = hashlib.sha256(password.encode() + salt).hexdigest()
+        data[email]['salt'] = salt.hex()
+
         # Key derived function
-        passphase = KeyGenerator.key_derivation(password)
+        passphase = KeyGenerator.key_derivation(data[email]['password'])
 
         key = passphase.encode('utf-8')
         IV = Crypto.Random.new().read(16)
@@ -72,9 +76,7 @@ def edit_profile(email, password, fullname, dob, phone, address):
             d = str(d).zfill(len(str(d)) + (16 - (len(str(d)) % 16)))
         ciphertext_d = cipher.encrypt(str(d).encode())
         b64_d = base64.b64encode(IV + ciphertext_d).decode()
-
         data[email]['Kprivate']['d'] = b64_d
-        data[email]['password'] = password
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
     return True, ''
@@ -113,7 +115,7 @@ def digital_signature(email, file_path):
 def digital_signature_verification(email, file_path):
     if data[email]['Kpublic'] == '':
         return False
-    if os.path.exists(file_path[:-4]):
+    if not os.path.exists(file_path[:-4]):
         return False
     if DigitalSignature.verify_file(file_path, (data[email]['Kpublic']['e'], data[email]['Kpublic']['n'])):
         return True
