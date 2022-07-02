@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
 
@@ -125,7 +126,7 @@ class EncryptFileWindow(QDialog):
 
         self.lb = QLabel("Choose a file for encyption")
         self.file_btn = QPushButton("Choose file")
-        self.file_btn.clicked.connect(self.GetFilePath)
+        self.file_btn.clicked.connect(self.EncryptFile)
         self.stat = QLabel("")
 
         self.vblayout.addWidget(self.lb)
@@ -133,18 +134,18 @@ class EncryptFileWindow(QDialog):
         self.vblayout.addWidget(self.stat)
         self.setLayout(self.vblayout)
 
-    def GetFilePath(self):
-        file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
-        if chk:
-            c = file_encrypt(GlobalObject().getUser(), file)
-            if c:
-                QMessageBox.about(self, "Encrypt File", "File Encrypt Successfully")
-                self.stat.setText("Your file is encypted")
-            else:
-                QMessageBox.warning(self, "Encypt File", "Unexpected error occurred!!!", QMessageBox.Ok)
+    def EncryptFile(self):
+        if not check_exist_key(GlobalObject().getUser()):
+            QMessageBox.warning(self, "Encrypt file", "Keys are empty!!!", QMessageBox.Ok)
         else:
-            QMessageBox.warning(self, "Encypt File", "File Path Error!!!", QMessageBox.Ok)
-            self.stat.setText("File Path Error")
+            file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
+            if chk:
+                c = file_encrypt(GlobalObject().getUser(), file)
+                if c:
+                    QMessageBox.about(self, "Encrypt File", "File Encrypt Successfully")
+                    self.stat.setText("Your file is encypted.\nCheck your current directory: " + os.getcwd())
+                else:
+                    QMessageBox.warning(self, "Encypt File", "Unexpected error occurred!!!", QMessageBox.Ok)
 
 
 class DecryptFileWindow(QDialog):
@@ -154,7 +155,7 @@ class DecryptFileWindow(QDialog):
 
         self.lb = QLabel("Choose a file for decyption")
         self.file_btn = QPushButton("Choose file")
-        self.file_btn.clicked.connect(self.GetFilePath)
+        self.file_btn.clicked.connect(self.DecryptFile)
         self.stat = QLabel("")
 
         self.vblayout.addWidget(self.lb)
@@ -162,18 +163,18 @@ class DecryptFileWindow(QDialog):
         self.vblayout.addWidget(self.stat)
         self.setLayout(self.vblayout)
 
-    def GetFilePath(self):
-        file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
-        if chk:
-            c = file_decrypt(GlobalObject().getUser(), file)
-            if c:
-                QMessageBox.about(self, "Decrypt File", "File Decrypt Successfully")
-                self.stat.setText("Your file is decypted")
-            else:
-                QMessageBox.warning(self, "Decypt File", "Unexpected error occurred!!!", QMessageBox.Ok)
+    def DecryptFile(self):
+        if not check_exist_key(GlobalObject().getUser()):
+            QMessageBox.warning(self, "Decrypt file", "Keys are empty!!!", QMessageBox.Ok)
         else:
-            QMessageBox.warning(self, "Decypt File", "File Path Error!!!", QMessageBox.Ok)
-            self.stat.setText("File Path Error")
+            file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
+            if chk:
+                c = file_decrypt(GlobalObject().getUser(), file)
+                if c:
+                    QMessageBox.about(self, "Decrypt File", "File Decrypt Successfully")
+                    self.stat.setText("Your file is decypted.\nCheck your current directory: " + os.getcwd())
+                else:
+                    QMessageBox.warning(self, "Decypt File", "Unexpected error occurred!!!", QMessageBox.Ok)
 
 
 class SignFileWindow(QDialog):
@@ -192,17 +193,17 @@ class SignFileWindow(QDialog):
         self.setLayout(self.vblayout)
 
     def GetFilePath(self):
-        file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
-        if chk:
-            c = digital_signature(GlobalObject().getUser(), file)
-            if c:
-                QMessageBox.about(self, "Sign File", "File Sign Successfully")
-                self.stat.setText("Check out for signature file")
-            else:
-                QMessageBox.warning(self, "Sign File", "Unexpected error occurred!!!", QMessageBox.Ok)
+        if not check_exist_key(GlobalObject().getUser()):
+            QMessageBox.warning(self, "Sign file", "Keys are empty!!!", QMessageBox.Ok)
         else:
-            QMessageBox.warning(self, "Sign File", "File Path Error!!!", QMessageBox.Ok)
-            self.stat.setText("File Path Error")
+            file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
+            if chk:
+                c = digital_signature(GlobalObject().getUser(), file)
+                if c:
+                    QMessageBox.about(self, "Sign File", "File Sign Successfully")
+                    self.stat.setText("Check out for signature file: " + os.getcwd())
+                else:
+                    QMessageBox.warning(self, "Sign File", "Unexpected error occurred!!!", QMessageBox.Ok)
 
 
 class VerifyFileSignWindow(QDialog):
@@ -210,7 +211,7 @@ class VerifyFileSignWindow(QDialog):
         super().__init__()
         self.vblayout = QVBoxLayout()
 
-        self.lb = QLabel("Choose a file for encyption")
+        self.lb = QLabel("Choose a file for sign verification")
         self.file_btn = QPushButton("Choose file")
         self.file_btn.clicked.connect(self.GetFilePath)
         self.stat = QLabel("")
@@ -221,18 +222,18 @@ class VerifyFileSignWindow(QDialog):
         self.setLayout(self.vblayout)
 
     def GetFilePath(self):
-        file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Signature Files (*.sig)")
-        if chk:
-            c = digital_signature_verification(GlobalObject().getUser(), file)
-            if c:
-                QMessageBox.about(self, "Verify File Sign", "Valid Signature")
-                self.stat.setText("Valid Signature")
-            else:
-                QMessageBox.warning(self, "Verify File Sign", "Cannot verify signature", QMessageBox.Ok)
-                self.stat.setText("Verify failed")
+        if not check_exist_key(GlobalObject().getUser()):
+            QMessageBox.warning(self, "Verify sign", "Keys are empty!!!", QMessageBox.Ok)
         else:
-            QMessageBox.warning(self, "Verify File Sign", "File Path Error!!!", QMessageBox.Ok)
-            self.stat.setText("File Path Error")
+            file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Signature Files (*.sig)")
+            if chk:
+                c = digital_signature_verification(GlobalObject().getUser(), file)
+                if c:
+                    QMessageBox.about(self, "Verify File Sign", "Valid Signature")
+                    self.stat.setText("Valid Signature")
+                else:
+                    QMessageBox.warning(self, "Verify File Sign", "Cannot verify signature", QMessageBox.Ok)
+                    self.stat.setText("Verify failed")
 
 
 class GenerateKeysWindow(QDialog):
@@ -256,7 +257,7 @@ class GenerateKeysWindow(QDialog):
             c = generate_key(GlobalObject().getUser())
             if c:
                 QMessageBox.about(self, "Generate Keys", "Keys generated successfully")
-                self.stat.setText("Keys generated successfully")
+                self.stat.setText("Keys generated successfully.")
             else:
                 QMessageBox.warning(self, "Generate Keys", "An unexpected error occurred!!!", QMessageBox.Ok)
                 self.stat.setText("Error")
@@ -311,7 +312,7 @@ class EditProfileWindow(QDialog):
             if not reg:
                 QMessageBox.warning(self, "Edit Profile", resp, QMessageBox.Ok)
             else:
-                QMessageBox.about(self, "Edit Profile", "Successfully save changes")
+                QMessageBox.about(self, "Edit Profile", "Successfully save changes.")
 
     def ClearClicked(self):
         self.email.setText("")
@@ -385,7 +386,9 @@ class SecondWindow(QWidget):
     
     def ClearAllWindow(self):
         for i in range(1, self.vblayout.count()):
-            self.vblayout.takeAt(i).widget().close()
+            widget_rm = self.vblayout.takeAt(i).widget()
+            self.vblayout.removeWidget(widget_rm)
+            widget_rm.setParent(None)
     
     def OpenEncryptFile(self):
         self.ClearAllWindow()
