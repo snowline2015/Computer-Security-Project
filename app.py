@@ -351,21 +351,21 @@ class SecondWindow(QWidget):
         menubar = QMenuBar()
 
         options = menubar.addMenu("Options")
+        options.addAction("Generate asymmetric keys")
         options.addAction("Encrypt File")
         options.addAction("Decrypt File")
         options.addAction("Sign File")
         options.addAction("Verify Sign")
-        options.addAction("Generate asymmetric keys")
         options.addAction("Edit Profile")
 
         options.triggered[QAction].connect(self.NavigateOptions)
-
+        
+        self.edit_profile = EditProfileWindow()
         self.encr = EncryptFileWindow()
         self.decr = DecryptFileWindow()
         self.sign = SignFileWindow()
         self.verify = VerifyFileSignWindow()
         self.gen_keys = GenerateKeysWindow()
-        self.edit_profile = EditProfileWindow()
 
         self.vblayout.addWidget(menubar)
         self.setLayout(self.vblayout)
