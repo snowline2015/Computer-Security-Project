@@ -117,14 +117,14 @@ def digital_signature(email, file_path):
     return True
 
 
-def digital_signature_verification(email, file_path):
-    if data[email]['Kpublic'] == '':
-        return False
-    if not os.path.exists(file_path[:-4]):
-        return False
-    if DigitalSignature.verify_file(file_path, (data[email]['Kpublic']['e'], data[email]['Kpublic']['n'])):
-        return True
-    return False
+def digital_signature_verification(file_path):
+    for email in data:
+        try:
+            if DigitalSignature.verify_file(file_path, (data[email]['Kpublic']['e'], data[email]['Kpublic']['n'])):
+                return True, email
+        except:
+            continue
+    return False, None
 
 
 def check_exist_key(email):

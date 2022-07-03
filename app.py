@@ -234,7 +234,7 @@ class VerifyFileSignWindow(QDialog):
         else:
             file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Signature Files (*.sig)")
             if chk:
-                c = digital_signature_verification(GlobalObject().getUser(), file)
+                c = digital_signature_verification(file)
                 if c:
                     QMessageBox.about(self, "Verify File Sign", "Valid Signature")
                     self.stat.setText("Valid Signature")
