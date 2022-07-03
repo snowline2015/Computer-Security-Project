@@ -140,7 +140,7 @@ class EncryptFileWindow(QDialog):
     def EncryptFile(self):
         if self.send_email.text() == "":
             QMessageBox.warning(self, "Encrypt file", "Target email is empty!!!", QMessageBox.Ok)
-        elif check_user_exist(self.send_email.text()):
+        elif not check_user_exist(self.send_email.text()):
             QMessageBox.warning(self, "Encrypt file", "Email not exist!!!", QMessageBox.Ok)
         elif not check_exist_key(self.send_email.text()):
             QMessageBox.warning(self, "Encrypt file", "Keys are empty!!!", QMessageBox.Ok)
@@ -234,10 +234,10 @@ class VerifyFileSignWindow(QDialog):
         else:
             file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "Signature Files (*.sig)")
             if chk:
-                c = digital_signature_verification(file)
+                c, signed_user = digital_signature_verification(file)
                 if c:
                     QMessageBox.about(self, "Verify File Sign", "Valid Signature")
-                    self.stat.setText("Valid Signature")
+                    self.stat.setText("Valid Signature.\nFile was signed by " + signed_user)
                 else:
                     QMessageBox.warning(self, "Verify File Sign", "Cannot verify signature", QMessageBox.Ok)
                     self.stat.setText("Verify failed")
