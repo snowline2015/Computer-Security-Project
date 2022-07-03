@@ -43,6 +43,11 @@ def login(email, password):
         return False, 'Wrong password'
     return True, None
 
+def check_user_exist(email):
+    if email not in data:
+        return False
+    return True
+
 
 def edit_profile(email, password, fullname, dob, phone, address):
     if email not in data:

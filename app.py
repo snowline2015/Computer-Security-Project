@@ -125,22 +125,29 @@ class EncryptFileWindow(QDialog):
         self.vblayout = QVBoxLayout()
 
         self.lb = QLabel("Choose a file for encyption")
+        self.send_email = QLineEdit()
+        self.send_email.setPlaceholderText("Enter email")
         self.file_btn = QPushButton("Choose file")
         self.file_btn.clicked.connect(self.EncryptFile)
         self.stat = QLabel("")
 
         self.vblayout.addWidget(self.lb)
+        self.vblayout.addWidget(self.send_email)
         self.vblayout.addWidget(self.file_btn)
         self.vblayout.addWidget(self.stat)
         self.setLayout(self.vblayout)
 
     def EncryptFile(self):
-        if not check_exist_key(GlobalObject().getUser()):
+        if self.send_email.text() == "":
+            QMessageBox.warning(self, "Encrypt file", "Target email is empty!!!", QMessageBox.Ok)
+        elif check_user_exist(self.send_email.text()):
+            QMessageBox.warning(self, "Encrypt file", "Email not exist!!!", QMessageBox.Ok)
+        elif not check_exist_key(self.send_email.text()):
             QMessageBox.warning(self, "Encrypt file", "Keys are empty!!!", QMessageBox.Ok)
         else:
             file , chk = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*)")
             if chk:
-                c = file_encrypt(GlobalObject().getUser(), file)
+                c = file_encrypt(self.send_email.text(), file)
                 if c:
                     QMessageBox.about(self, "Encrypt File", "File Encrypt Successfully")
                     self.stat.setText("Your file is encypted.\nCheck your current directory: " + os.getcwd())
