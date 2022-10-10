@@ -8,7 +8,7 @@ YÊU CẦU
 
 Xây dựng ứng dụng gồm các chức năng chính sau: 
 
-**1. Đăng ký tài khoản người dùng**
+1. Đăng ký tài khoản người dùng
 
 1.1 Ứng dụng cho phép người dùng đăng ký 1 tài khoản với các thông tin: email (dùng làm 
 định danh tài khoản), họ tên, ngày sinh, điện thoại, địa chỉ, mật khẩu (passphase). 
@@ -21,7 +21,7 @@ dùng.
 1.4 Người dùng phải đăng nhập ứng dụng bằng email và passphase trước khi sử dụng các tính 
 sau tiếp theo sau đây.
 
-**2. Phát sinh cặp khoá bất đối xứng**
+2. Phát sinh cặp khoá bất đối xứng
 
 2.1 Ứng dụng cho phép phát sinh một cặp khoá (Kpublic, Kprivate) có độ dài là 2048 bit cho 
 thuật toán RSA tương ứng với mỗi người dùng. 
@@ -33,7 +33,7 @@ người dùng.
 
 2.3 Cặp khoá này chỉ cần phát sinh 1 lần.
 
-**3. Cập nhật thông tin tài khoản**
+3. Cập nhật thông tin tài khoản
 
 3.1 Ứng dụng cho phép cập nhật thông tin tài khoản (họ tên, ngày sinh, điện thoại, địa chỉ, 
 passphase). 
@@ -42,7 +42,7 @@ passphase).
 là khoá Kprivate được mã hoá ở bước 2.2 với passphase cũ, cần được mã hoá lại với 
 passphase mới.
 
-**4. Mã hoá tập tin (người gửi mã khoá tập tin và gửi cho người nhận)**
+4. Mã hoá tập tin (người gửi mã khoá tập tin và gửi cho người nhận)
 
 4.1 Ứng dụng cho phép người dùng chọn tập tin cần mã hoá và chọn người nhận (giả sử người 
 nhận là 1 người dùng khác của ứng dụng). 
@@ -54,7 +54,7 @@ hoá toàn bộ tập tin.
 thuật toán RSA. Khoá Ksession sau khi được mã hoá thì sẽ được bổ sung vào tập tin đã mã 
 hoá (sinh viên tự đề nghị cấu trúc tập tin này). 
 
-**5. Giải mã tập tin (người nhận nhận tập tin và giải mã)**
+5. Giải mã tập tin (người nhận nhận tập tin và giải mã)
 
 5.1 Ứng dụng cho phép người dùng chọn tập tin cần giải mã. 
 
@@ -66,7 +66,7 @@ private key (Kprivate) của mình đã được mã hoá bằng thuật toán A
 
 5.4 Ứng dụng dùng khoá Ksession để giải mã tập tin (giải mã cho bước 4.2)
 
-**6. Ký trên tập tin**
+6. Ký trên tập tin
 
 6.1 Ứng dụng cho phép chọn tập tin cần ký
 
@@ -77,7 +77,7 @@ private key (Kprivate) của mình đã được mã hoá bằng thuật toán A
 6.4 Chữ ký lưu riêng thành 1 file .sig (ví dụ: chữ ký đi kèm với file sample.doc là file 
 sample.doc.sig)
 
-**7. Xác nhận chữ ký trên tập tin**
+7. Xác nhận chữ ký trên tập tin
 
 7.1 Ứng dụng cho phép chọn 2 tập tin, gồm 1 tập tin cần xác nhận chữ ký, 1 tập tin chữ ký (ví 
 dụ: sample.doc và sample.doc.sig ở bước 6.4)
